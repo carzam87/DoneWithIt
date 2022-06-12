@@ -4,7 +4,7 @@ import AppPicker from '../Picker';
 import PickerItem from '../PickerItem';
 import ErrorMessage from './ErrorMessage';
 
-function AppFormPicker ({ 
+function FormPicker ({ 
     items, 
     name, 
     numberOfColumns=1,
@@ -29,4 +29,4 @@ function AppFormPicker ({
     );
 }
 
-export default AppFormPicker;
+export default FormPicker;

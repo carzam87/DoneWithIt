@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup'
 
-import { AppForm, AppFormField, SubmitButton } from '../components/forms';
+import { Form, FormField, SubmitButton } from '../components/forms';
 import Screen from '../components/Screen';
 
 const validationSchema = Yup.object().shape({
@@ -12,12 +12,12 @@ const validationSchema = Yup.object().shape({
 function RegisterScreen (props) {
     return (
         <Screen>
-            <AppForm
+            <Form
                 initialValues={{ name: '', email: '', password: '' }}
                 onSubmit={(values) => console.log(values)}
                 validationSchema={validationSchema}
             >
-                <AppFormField
+                <FormField
                     name="name"
                     icon="account"
                     autoCapitalize="none"
@@ -29,7 +29,7 @@ function RegisterScreen (props) {
 
 
 
-                <AppFormField
+                <FormField
                     name="email"
                     icon="email"
                     autoCapitalize="none"
@@ -39,7 +39,7 @@ function RegisterScreen (props) {
                     textContentType="emailAddress"
                 />
 
-                <AppFormField
+                <FormField
                     autoCapitalize="none"
                     icon="lock"
                     name="password"
@@ -48,7 +48,7 @@ function RegisterScreen (props) {
                     textContentType="password"
                 />
                 <SubmitButton title="Register" ></SubmitButton>
-            </AppForm>
+            </Form>
         </Screen>
     );
 }

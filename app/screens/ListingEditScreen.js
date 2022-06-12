@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppForm, AppFormField, SubmitButton, AppFormPicker } from '../components/forms';
+import { Form, FormField, SubmitButton, FormPicker, FormImagePicker  } from '../components/forms';
 import Screen from '../components/Screen';
 import * as Yup from 'yup'
 import CategoryPickerItem from '../components/CategoryPickerItem';
@@ -9,6 +9,7 @@ const validationSchema = Yup.object().shape({
     price: Yup.number().required().min(1).max(10000).label('Price'),
     description: Yup.string().label('Description'),
     category: Yup.object().required().nullable().label('Category'),
+    images: Yup.array().min(1, 'Please select at least one image'),
 })
 
 const categories = [
@@ -71,24 +72,25 @@ const categories = [
 function ListingEditScreen (props) {
     return (
         <Screen>
-            <AppForm
+            <Form
                 initialValues={{
                     title: '',
                     price: '',
                     category: null,
-                    description: ''
+                    description: '',
+                    images:[]
                 }}
                 onSubmit={(values) => console.log(values)}
                 validationSchema={validationSchema}
             >
-                <AppFormField
-                    keyboardType="default"
-                    name="title"
+              <FormImagePicker name="images" />
+                <FormField
                     maxLength={255}
+                    name="title"
                     placeholder="Title"
                 />
 
-                <AppFormField
+                <FormField
                     keyboardType="numeric"
                     name="price"
                     maxLength={8}
@@ -96,7 +98,7 @@ function ListingEditScreen (props) {
                     width={120}
                 />
 
-               <AppFormPicker
+               <FormPicker
                name='category'
                items={categories}
                numberOfColumns={3}
@@ -105,7 +107,7 @@ function ListingEditScreen (props) {
                width={'50%'}
                />
 
-                <AppFormField
+                <FormField
                     maxLength={255}
                     name="description"
                     multiline
@@ -115,7 +117,7 @@ function ListingEditScreen (props) {
                 />
 
                 <SubmitButton title="Save" ></SubmitButton>
-            </AppForm>
+            </Form>
         </Screen>
     );
 }
