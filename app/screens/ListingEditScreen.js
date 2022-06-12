@@ -1,125 +1,140 @@
-import React from 'react';
-import { Form, FormField, SubmitButton, FormPicker, FormImagePicker  } from '../components/forms';
+import React, { useEffect, useState } from 'react';
+import { Form, FormField, SubmitButton, FormPicker, FormImagePicker } from '../components/forms';
+import CategoryPickerItem from '../components/CategoryPickerItem';
 import Screen from '../components/Screen';
 import * as Yup from 'yup'
-import CategoryPickerItem from '../components/CategoryPickerItem';
+import * as Location from 'expo-location'
 
 const validationSchema = Yup.object().shape({
-    title: Yup.string().required().min(1).label('Title'),
-    price: Yup.number().required().min(1).max(10000).label('Price'),
-    description: Yup.string().label('Description'),
-    category: Yup.object().required().nullable().label('Category'),
-    images: Yup.array().min(1, 'Please select at least one image'),
+  title: Yup.string().required().min(1).label('Title'),
+  price: Yup.number().required().min(1).max(10000).label('Price'),
+  description: Yup.string().label('Description'),
+  category: Yup.object().required().nullable().label('Category'),
+  images: Yup.array().min(1, 'Please select at least one image'),
 })
 
 const categories = [
-    {
-      backgroundColor: "#fc5c65",
-      icon: "floor-lamp",
-      label: "Furniture",
-      value: 1,
-    },
-    {
-      backgroundColor: "#fd9644",
-      icon: "car",
-      label: "Cars",
-      value: 2,
-    },
-    {
-      backgroundColor: "#fed330",
-      icon: "camera",
-      label: "Cameras",
-      value: 3,
-    },
-    {
-      backgroundColor: "#26de81",
-      icon: "cards",
-      label: "Games",
-      value: 4,
-    },
-    {
-      backgroundColor: "#2bcbba",
-      icon: "shoe-heel",
-      label: "Clothing",
-      value: 5,
-    },
-    {
-      backgroundColor: "#45aaf2",
-      icon: "basketball",
-      label: "Sports",
-      value: 6,
-    },
-    {
-      backgroundColor: "#4b7bec",
-      icon: "headphones",
-      label: "Movies & Music",
-      value: 7,
-    },
-    {
-      backgroundColor: "#a55eea",
-      icon: "book-open-variant",
-      label: "Books",
-      value: 8,
-    },
-    {
-      backgroundColor: "#778ca3",
-      icon: "application",
-      label: "Other",
-      value: 9,
-    },
-  ];
+  {
+    backgroundColor: "#fc5c65",
+    icon: "floor-lamp",
+    label: "Furniture",
+    value: 1,
+  },
+  {
+    backgroundColor: "#fd9644",
+    icon: "car",
+    label: "Cars",
+    value: 2,
+  },
+  {
+    backgroundColor: "#fed330",
+    icon: "camera",
+    label: "Cameras",
+    value: 3,
+  },
+  {
+    backgroundColor: "#26de81",
+    icon: "cards",
+    label: "Games",
+    value: 4,
+  },
+  {
+    backgroundColor: "#2bcbba",
+    icon: "shoe-heel",
+    label: "Clothing",
+    value: 5,
+  },
+  {
+    backgroundColor: "#45aaf2",
+    icon: "basketball",
+    label: "Sports",
+    value: 6,
+  },
+  {
+    backgroundColor: "#4b7bec",
+    icon: "headphones",
+    label: "Movies & Music",
+    value: 7,
+  },
+  {
+    backgroundColor: "#a55eea",
+    icon: "book-open-variant",
+    label: "Books",
+    value: 8,
+  },
+  {
+    backgroundColor: "#778ca3",
+    icon: "application",
+    label: "Other",
+    value: 9,
+  },
+];
+
 
 function ListingEditScreen (props) {
-    return (
-        <Screen>
-            <Form
-                initialValues={{
-                    title: '',
-                    price: '',
-                    category: null,
-                    description: '',
-                    images:[]
-                }}
-                onSubmit={(values) => console.log(values)}
-                validationSchema={validationSchema}
-            >
-              <FormImagePicker name="images" />
-                <FormField
-                    maxLength={255}
-                    name="title"
-                    placeholder="Title"
-                />
 
-                <FormField
-                    keyboardType="numeric"
-                    name="price"
-                    maxLength={8}
-                    placeholder="Price"
-                    width={120}
-                />
+  const [location, setLocation] = useState();
 
-               <FormPicker
-               name='category'
-               items={categories}
-               numberOfColumns={3}
-               PickerItemComponent={CategoryPickerItem}
-               placeholder='Category'
-               width={'50%'}
-               />
+  const getLocation = async () => {
+    const { granted } = await Location.requestBackgroundPermissionsAsync()
+    if (!granted) return
+    const { coords: { latitude, longitude } } = await Location.getLastKnownPositionAsync()
+    setLocation({ latitude, longitude })
+  }
 
-                <FormField
-                    maxLength={255}
-                    name="description"
-                    multiline
-                    keyboardType="default"
-                    numberOfLines={3}
-                    placeholder="Description"
-                />
+  useEffect(() => {
+    getLocation()
+  }, [])
+  return (
+    <Screen>
+      <Form
+        initialValues={{
+          title: '',
+          price: '',
+          category: null,
+          description: '',
+          images: []
+        }}
+        onSubmit={(values) => console.log(location)}
+        validationSchema={validationSchema}
+      >
+        <FormImagePicker name="images" />
+        <FormField
+          maxLength={255}
+          name="title"
+          placeholder="Title"
+        />
 
-                <SubmitButton title="Save" ></SubmitButton>
-            </Form>
-        </Screen>
-    );
+        <FormField
+          keyboardType="numeric"
+          name="price"
+          maxLength={8}
+          placeholder="Price"
+          width={120}
+        />
+
+        <FormPicker
+          name='category'
+          items={categories}
+          numberOfColumns={3}
+          PickerItemComponent={CategoryPickerItem}
+          placeholder='Category'
+          width={'50%'}
+        />
+
+        <FormField
+          maxLength={255}
+          name="description"
+          multiline
+          keyboardType="default"
+          numberOfLines={3}
+          placeholder="Description"
+        />
+
+        <SubmitButton title="Save" ></SubmitButton>
+      </Form>
+    </Screen>
+  );
 }
 
 export default ListingEditScreen;
